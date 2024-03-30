@@ -1,0 +1,181 @@
+html, body, #root {
+  height: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+p, h3, h2, ol,strong {
+  font-family: Arial, Helvetica, sans-serif !important;
+  color:#E9F8F9;
+}
+
+blockquote {
+  color:#E9F8F9;
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-image: url('../assets/photo.webp');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #333;
+}
+
+.main-c , .main-w {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 80%;
+  padding-left: 5%;
+  padding-right: 5%;
+  margin: 0 auto;
+  padding-top: 50px;
+  padding-bottom: 0;
+  text-align: center;
+}
+
+.main-b {
+  justify-content: center;
+}
+
+.main-c {
+  align-items: center;
+}
+
+section {
+  border-radius: 9px;
+  margin: 10px;
+  width: 100%;
+  background-color: #333;
+}
+
+section p, ul {
+  padding: 10px;
+  color: #E9F8F9;
+}
+
+section h2 {
+  color: violet;
+  font-weight: bold;
+  padding-bottom: 5px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.user-actions > ul {
+  display: flex;
+  list-style: none;
+  padding: 20px;
+}
+
+ul.item-list {
+  list-style:none;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+}
+
+li.item {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 10px;
+  padding: 10px;
+  border: 1px solid violet;
+  border-radius: 5px;
+  background: #333;
+  min-width: 30%;
+}
+
+.item strong {
+  margin-right: 10px;
+}
+
+.item p {
+  text-align: center;
+}
+
+.item button {
+  max-width: 60px !important;
+  align-items: flex-end !important;
+}
+
+.button-link, button.button {
+  display: block;
+  padding: 10px;
+  margin: 0 auto;
+  background-color: violet;
+  color: #ffffff;
+  text-decoration: none;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  width: 100%;
+  max-width: 180px;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.button-link:hover, button.button:hover {
+  background-color: violet;
+}
+
+.user-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.link {
+  display: block;
+  text-align: center;
+  margin-top: 15px;
+  color: violet;
+  margin-bottom: 15px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+form {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+label {
+  display: block;
+  color: #E9F8F9;
+  margin-bottom: 15px;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+input, select {
+  padding: 8px;
+  margin-bottom: 10px;
+  width:150px;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+h1 {
+  color: violet;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif !important;
+}
+
+.hr-style {
+  background-color: violet;
+  height: 5px;
+  width:100%;
+}
