@@ -22,10 +22,10 @@ const CreatingStep2 = ({ operatingData, stepForward, createData }) => {
     e.preventDefault();
 
     try {
-      console.log(createData.idGame);
-      console.log(createData);
-      console.log(teamsData);
-      const response = await axios.post('https://localhost:7290/api/Team/CreateTeams', teamsData);
+      //console.log(createData.idGame);
+      //console.log(createData);
+      //console.log(teamsData);
+      const response = await axios.post('https://localhost:7290/api/Team/CreateTeams', teamsData,{headers: { Authorization: `Bearer ${operatingData.token}` }});
 
       
       stepForward();
@@ -37,6 +37,7 @@ const CreatingStep2 = ({ operatingData, stepForward, createData }) => {
 
   return (
     <div className='main-c'>
+      <h1>Creating game</h1>
       <h2>Step 2: Create Teams</h2>
       <form onSubmit={handleSubmit}>
         {teamsData.map((team, index) => (

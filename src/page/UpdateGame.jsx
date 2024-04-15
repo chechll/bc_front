@@ -29,7 +29,7 @@ const UpdateGame = ({operatingData, onLoginChange}) => {
   const stepForward = () => {
     setStep(step+1);
     if (step === 4) {
-        onLoginChange(operatingData.idUser, operatingData.rights);
+        onLoginChange(operatingData.idUser, operatingData.rights, operatingData.token);
     }
   }; 
 
@@ -39,7 +39,7 @@ const UpdateGame = ({operatingData, onLoginChange}) => {
 
   useEffect(() => {
     if (operatingData.idUser === 0 || operatingData.idUser === undefined) {
-        onLoginChange(operatingData.idUser, operatingData.rights);
+        onLoginChange(operatingData.idUser, operatingData.rights, operatingData.token);
     }
   }, [operatingData.idUser, onLoginChange]);
 
@@ -59,7 +59,6 @@ const UpdateGame = ({operatingData, onLoginChange}) => {
   return (
       <div className='main-c'>
         <Navbar operatingData={operatingData} />
-        <h1>Updating game</h1>
         {renderStep()}
       </div>  
   );

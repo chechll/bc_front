@@ -90,8 +90,6 @@
   @media screen and (max-width: 600px) {
     .game-container {
       max-width: 100%;
-      padding-top: 600px !important;
       display: block;
-      
     }
   }

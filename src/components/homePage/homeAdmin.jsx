@@ -6,17 +6,22 @@ import { toast } from 'react-toastify';
 const HomeAdmin = ( { onLoginChange, operatingData} ) => {
   const [user, setUsers] = useState([]);
   const [isEditing, setEditing] = useState(false);
-  const [choosedUser, setChoosedUser] = useState({});
+  const [choosedUser, setChoosedUser] = useState({
+    idUser: 0,
+    username: '',
+    rights:0,
+    password:'',
+  });
   const [prevEditing, setPrevEditing] = useState(isEditing);
 
   useEffect(() => {
     if (operatingData.idUser === 0 || operatingData.idUser === undefined) {
-      onLoginChange(operatingData.idUser, operatingData.rights);
+      onLoginChange(operatingData.idUser, operatingData.rights, operatingData.token);
     }
     if( prevEditing === isEditing) {
       const fetchUsers = async () => {
         try {
-            const response = await axios.get('https://localhost:7290/api/User/GetAllUsers');
+            const response = await axios.get('https://localhost:7290/api/User/GetAllUsers',{headers: { Authorization: `Bearer ${operatingData.token}` }});
             setUsers(response.data);
         } catch (error) {
             console.error('Error fetching user:', error);
@@ -38,13 +43,14 @@ const HomeAdmin = ( { onLoginChange, operatingData} ) => {
   
       if (isConfirmed) {
         try {
-          const response = await axios.delete('https://localhost:7298/api/User/UserDelete', {
+          const response = await axios.delete('https://localhost:7290/api/User/Delete', {
             params: {
-              idUser: idUser,
+              userId: idUser,
             },
+            headers: { Authorization: `Bearer ${operatingData.token}` }
           });
-          console.log('Deleted successfully');
-          setUsers((prevUsers) => prevUsers.filter((user) => user.id !== idUser));
+          //console.log('Deleted successfully');
+          setUsers((prevUsers) => prevUsers.filter((user) => user.idUser !== idUser));
         } catch (error) {
           console.error('Error during delete:', error);
           toast.error('Error during delete');
@@ -56,21 +62,9 @@ const HomeAdmin = ( { onLoginChange, operatingData} ) => {
     e.preventDefault();
     
     try {
-      const formData = new FormData();
-      formData.append('idUser', userData.idUser);
-      formData.append('name', userData.name);
-      formData.append('surname', userData.surname);
-      formData.append('email', userData.email);
-      formData.append('userPassword', userData.userPassword);
-      formData.append('rights', userData.rights);
-    
       console.log('Updating');
-
-      const response = await axios.put('https://localhost:7298/api/User/Update', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      //console.log(choosedUser);
+      const response = await axios.put('https://localhost:7290/api/User/UpdateAdmin', choosedUser, {headers: { Authorization: `Bearer ${operatingData.token}` }});
     
       console.log('User updated successfully:', response.data);
       toast.success('User updated successfully:', response.data);
@@ -83,8 +77,9 @@ const HomeAdmin = ( { onLoginChange, operatingData} ) => {
   };
 
   const handleEdit = (user) => {
-    setEditing(!isEditing);
-    setChoosedUser(user);
+    const userWithPassword = { ...user, password: '' };
+  setEditing(!isEditing);
+  setChoosedUser(userWithPassword);
   };
 
   return (
@@ -95,13 +90,13 @@ const HomeAdmin = ( { onLoginChange, operatingData} ) => {
           <h2>All Users</h2>
           <ul className="item-list">
           {user.map((user) => (
-              <li key={user.id} className="item">
-              <strong>Email:</strong> {user.email}
+              <li key={user.idUser} className="item">
+              <strong>Username:</strong> {user.username}
               <div className="user-buttons">
                 <button className="button" onClick={() => handleEdit(user)}>
                     Update
                 </button>
-                <button className="button" onClick={() => handleDelete(user.id)}>
+                <button className="button" onClick={() => handleDelete(user.idUser)}>
                     Delete
                 </button>
               </div>
@@ -110,29 +105,17 @@ const HomeAdmin = ( { onLoginChange, operatingData} ) => {
           </ul>
         </>
       ) : (
-        <>
+        <div className="main-c main-b">
           <div>
             <label>
-              <strong>Name: </strong>
-              <input type="text" name="name" value={choosedUser.name} onChange={handleChange} />
+              <strong>Username: </strong>
+              <input type="text" name="username" value={choosedUser.username} onChange={handleChange} />
             </label>
           </div>
           <div>
             <label>
-              <strong>Surname: </strong>
-              <input type="text" name="surname" value={choosedUser.surname} onChange={handleChange} />
-            </label>
-          </div>
-          <div>
-            <label>
-              <strong>Email: </strong>
-              <input type="text" name="email" value={choosedUser.email} onChange={handleChange} />
-            </label>
-          </div>
-          <div>
-            <label>
-              <strong>isAdmin:</strong>
-              <input type="number" name="Admin" value={choosedUser.Admin} onChange={handleChange} />
+              <strong>Rigths:</strong>
+              <input type="number" name="rights" value={choosedUser.rights} onChange={handleChange} />
             </label>
           </div>
           <div className="user-actions">
@@ -141,7 +124,7 @@ const HomeAdmin = ( { onLoginChange, operatingData} ) => {
               <li><button className="button" onClick={() => handleEdit(choosedUser)}>Back</button></li>
             </ul> 
           </div> 
-        </>
+        </div>
       )}   
     </div>
   );

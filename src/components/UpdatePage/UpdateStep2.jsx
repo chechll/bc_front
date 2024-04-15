@@ -14,8 +14,11 @@ const UpdateStep2 = ({ operatingData, stepForward, updateData, stepBack }) => {
             params: {
               idGame: updateData.idGame,
             },
+            headers: { Authorization: `Bearer ${operatingData.token}` }
         });
-        setTeamsData(response.data);
+        const initialTeamData = response.data.map(team => ({ ...team, password: '' }));
+        setTeamsData(initialTeamData);
+        
       } catch (error) {
         console.error('Error fetching teams data:', error);
         toast.error('Error fetching teams data');
@@ -36,7 +39,7 @@ const UpdateStep2 = ({ operatingData, stepForward, updateData, stepBack }) => {
     e.preventDefault();
 
     try {
-      const response = await axios.put('https://localhost:7290/api/Team/UpdateTeams', teamsData);
+      const response = await axios.put('https://localhost:7290/api/Team/UpdateTeams', teamsData,{headers: { Authorization: `Bearer ${operatingData.token}` }});
       stepForward();
       toast.success('Updated successefully');
     } catch (error) {
@@ -47,12 +50,13 @@ const UpdateStep2 = ({ operatingData, stepForward, updateData, stepBack }) => {
 
   return (
     <div className='main-c'>
-      <h2>Step 2: Create Teams</h2>
+      <h1>Updating game</h1>
+      <h2>Step 2: Update Teams</h2>
       <form onSubmit={handleSubmit}>
         {teamsData.map((team, index) => (
           <div key={index}>
             <label>
-              Team {index + 1} Name:
+              Team{index + 1} Name:  &nbsp;
               <input
                 placeholder='Name'
                 type="text"
@@ -63,7 +67,7 @@ const UpdateStep2 = ({ operatingData, stepForward, updateData, stepBack }) => {
               />
             </label>
             <label>
-              Password:
+              Password:  &nbsp; &nbsp; &nbsp; &nbsp;
               <input
                 placeholder='Password'
                 type="password"
@@ -74,7 +78,7 @@ const UpdateStep2 = ({ operatingData, stepForward, updateData, stepBack }) => {
               />
             </label>
             <label>
-              Colour:
+              Colour:  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
               <input
                 placeholder='colour'
                 type="color"

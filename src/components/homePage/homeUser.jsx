@@ -9,31 +9,53 @@ function HomeUser ({onLoginChange, operatingData}) {
     const [preparedGames, setPreparedGames] = useState([]);
     const [completedGames, setCompletedGames] = useState([]);
     const [isThereAnyGame, setIsThereAnyGame] = useState(true);
+    const [runningGames, setRunningGames] = useState([]);
     const navigate = useNavigate();
 
     const fetchGames = async () => {
         try {
-            const response = await axios.get('https://localhost:7290/api/Game/GetAllGames');
+            const response = await axios.get('https://localhost:7290/api/Game/GetAllGames', { 
+                params: { iduser: operatingData.idUser } ,
+                headers: { Authorization: `Bearer ${operatingData.token}` }
+            });
             if (response.data && response.data.length > 0) {
-                const preparedGames = response.data.filter(game => game.dateGame === null);
-                const completedGames = response.data.filter(game => game.dateGame !== null);
+                const currentTime = new Date();
+                const preparedGames = [];
+                const runningGames = [];
+                const completedGames = [];
+    
+                await Promise.all(response.data.map(async (game) => {
+                    if (!game.dateGame) {
+                        preparedGames.push(game);
+                    } else {
+                        const differenceInMillis = currentTime - new Date(game.dateGame);
+                        const differenceInHours = differenceInMillis / (1000 * 60 * 60);
+                        if (differenceInHours < 1 && (await checkIfRunning(game.idGame))) {
+                            runningGames.push(game);
+                        } else {
+                            completedGames.push(game);
+                        }
+                    }
+                }));
+    
                 setPreparedGames(preparedGames);
+                setRunningGames(runningGames);
                 setCompletedGames(completedGames);
-                console.log(response.data);
                 setGames(response.data);
-              setIsThereAnyGame(true);
-          } else {
-              setIsThereAnyGame(false);
-              console.log('No data received from the server.');
-          }
+                setIsThereAnyGame(true);
+            } else {
+                setIsThereAnyGame(false);
+                console.log('No data received from the server.');
+            }
         } catch (error) {
             console.error('Error fetching games:', error);
         }
     };
+    
 
     useEffect(() => {
         if (operatingData.idUser === 0 || operatingData.idUser === undefined) {
-            onLoginChange(operatingData.idUser, operatingData.rights);
+            onLoginChange(operatingData.idUser, operatingData.rights, operatingData.token);
         }
 
         fetchGames();
@@ -43,12 +65,44 @@ function HomeUser ({onLoginChange, operatingData}) {
         navigate('/create_game'); 
     };
 
+    const checkIfRunning = async (idG) => {
+        try {
+            const response = await axios.get('https://localhost:7290/api/Game/CheckGame', {
+                params: {
+                    idGame: idG,
+                },
+                headers: { Authorization: `Bearer ${operatingData.token}` }
+            });
+            if (response.data == "Yes" ) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (error) {
+            console.error('Error fetching teams data:', error);
+            toast.error('Error fetching teams data');
+        }
+    };
+
+    const handleStartGame = async (idGame) => {
+        try {
+          await axios.put(`https://localhost:7290/api/Game/Start?idGame=${idGame}`, null, {headers: { Authorization: `Bearer ${operatingData.token}` }});
+          console.log('Added successfully');
+          toast.success('Cloned successfully');
+          navigate(`/game/${idGame}`);
+        } catch (error) {
+          console.error('Error during start:', error.response.data);
+          toast.error('Error during clone');
+        }
+      };
+
     const handleClone = async (idGame) => {
         const isConfirmed = window.confirm('Are you sure?');
         if (isConfirmed) {
             try {
-                console.log(idGame);
-                await axios.get('https://localhost:7290/api/Game/CloneGame', { params : {idGame:idGame},});
+                //console.log(idGame);
+                await axios.get('https://localhost:7290/api/Game/CloneGame', { params : {idGame:idGame}, headers: { Authorization: `Bearer ${operatingData.token}` }});
                 console.log('Cloned successfully');
                 toast.success('Cloned successfully');
                 fetchGames();
@@ -63,11 +117,10 @@ function HomeUser ({onLoginChange, operatingData}) {
         const isConfirmed = window.confirm('Are you sure?');
         if (isConfirmed) {
             try {
-                console.log(idGame);
+                //console.log(idGame);
                 await axios.delete('https://localhost:7290/api/Game/DeleteGame', {
-                    params: {
-                        idGame: idGame,
-                    },
+                    headers: { Authorization: `Bearer ${operatingData.token}` },
+                    params: { idGame: idGame, },
                 });
                 console.log('Deleted successfully');
                 toast.success('Deleted successfully');
@@ -87,10 +140,26 @@ function HomeUser ({onLoginChange, operatingData}) {
     return (
         <div className='main-w'>
             <button className="button" onClick={handleCreate}>
-                        Create new game
+                        Create new button
             </button>
             {isThereAnyGame ? (
                 <div>
+                    <hr className='hr-style'/>
+                    <h1>Running Games:</h1>
+                    <ul className="item-list">
+                        {runningGames.map((game) => (
+                            <li key={game.idGame} className="item">
+                                <strong>Name</strong> {game.name} , <strong>Date:</strong> {new Date(game.dateGame).toLocaleString()}
+                                <div className='buttons'>
+                                <Link className='button-link' to={`/stats/${game.idGame}`}>Stats</Link>
+                                <button className="button" onClick={() => handleClone(game.idGame)}>
+                                    Clone
+                                </button>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+
                     <div className='item list'>
                     <hr className='hr-style'/>
                     <h1>Prepared Games:</h1>
@@ -98,11 +167,13 @@ function HomeUser ({onLoginChange, operatingData}) {
                         {preparedGames.map((game) => (
                             <li key={preparedGames.idGame} className="item">
                                 <strong>Name</strong> {game.name}
-                                <Link className='button-link' to={`/game/${game.idGame}`}>Start</Link>
+                                <div className='buttons'>
+                                <button className='button' onClick={() => handleStartGame(game.idGame)}>Start</button>
                                 <Link className='button-link' to={`/update_game/${game.idGame}`}>Update</Link>
                                 <button className="button" onClick={() => handleDelete(game.idGame)}>
                                     Delete
                                 </button>
+                                </div>
                             </li>
                         ))}
                     </ul>
@@ -112,14 +183,16 @@ function HomeUser ({onLoginChange, operatingData}) {
                     <ul className="item-list">
                         {completedGames.map((game) => (
                             <li key={game.idGame} className="item">
-                                <strong>Name</strong> {game.name} , <strong>Date:</strong> {game.dateGame}
-                                <Link className='button-link' to={`/stats/${game.idGame}`}>Show Stats</Link>
+                                <strong>Name</strong> {game.name} , <strong>Date:</strong> {new Date(game.dateGame).toLocaleString()}
+                                <div className='buttons'>
+                                <Link className='button-link' to={`/stats/${game.idGame}`}>Stats</Link>
                                 <button className="button" onClick={() => handleClone(game.idGame)}>
                                     Clone
                                 </button>
                                 <button className="button" onClick={() => handleDelete(game.idGame)}>
                                     Delete
                                 </button>
+                                </div>
                             </li>
                         ))}
                     </ul>

@@ -14,6 +14,7 @@ const CreatingStep3 = ({ operatingData, onLoginChange, updateData, stepBack }) =
             params: {
               idGame: updateData.idGame,
             },
+            headers: { Authorization: `Bearer ${operatingData.token}` }
         });
           setTasksData(response.data);
         } catch (error) {
@@ -36,9 +37,9 @@ const CreatingStep3 = ({ operatingData, onLoginChange, updateData, stepBack }) =
     e.preventDefault();
 
     try {
-      const response = await axios.put('https://localhost:7290/api/Task/UpdateTasks', tasksData);
+      const response = await axios.put('https://localhost:7290/api/Task/UpdateTasks', tasksData,{headers: { Authorization: `Bearer ${operatingData.token}` }});
       console.log('Tasks created successfully');
-      onLoginChange(operatingData.idUser, operatingData.rights);
+      onLoginChange(operatingData.idUser, operatingData.rights, operatingData.token);
     } catch (error) {
       console.error('Error  tasks:', error.message);
       toast.error('Error during updating');
@@ -47,7 +48,8 @@ const CreatingStep3 = ({ operatingData, onLoginChange, updateData, stepBack }) =
 
   return (
     <div className='main-c'>
-      <h2>Step 3: Create Tasks</h2>
+      <h1>Updating game</h1>
+      <h2>Step 3: Update Tasks</h2>
       <form onSubmit={handleSubmit}>
         {tasksData.map((task, index) => (
           <div key={index}>

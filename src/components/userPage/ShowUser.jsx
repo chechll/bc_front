@@ -18,6 +18,7 @@ function ShowUser({ handleEdit, userData, onLoginChange }) {
                     params: {
                         userId: userData.idUser,
                     },
+                    headers: { Authorization: `Bearer ${operatingData.token}` }
                 });
                 console.log('Deleted successfully');
                 onLoginChange(response.data);

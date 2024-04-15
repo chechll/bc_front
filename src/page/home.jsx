@@ -7,7 +7,7 @@ import HomeUser from '../components/homePage/homeUser';
 function Home({ onLoginChange, operatingData }) {
     useEffect(() => {
         if (operatingData.idUser === 0 || operatingData.idUser === undefined || operatingData.rights === undefined) {
-          onLoginChange(operatingData.idUser, operatingData.rights);
+          onLoginChange(operatingData.idUser, operatingData.rights, operatingData.token);
         }
       }, [operatingData.idUser]);
 

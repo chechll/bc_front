@@ -41,7 +41,7 @@ body {
   padding-left: 5%;
   padding-right: 5%;
   margin: 0 auto;
-  padding-top: 50px;
+  padding-top: 30px;
   padding-bottom: 0;
   text-align: center;
 }
@@ -92,15 +92,21 @@ ul.item-list {
 
 li.item {
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
+  flex-direction: column; /* Display content vertically */
+  align-items: flex-start; /* Align items to the start of the flex container */
   margin: 10px;
   padding: 10px;
   border: 1px solid violet;
   border-radius: 5px;
   background: #333;
-  min-width: 30%;
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 10px;
 }
 
 .item strong {
@@ -112,8 +118,9 @@ li.item {
 }
 
 .item button {
-  max-width: 60px !important;
+  width: 80px !important;
   align-items: flex-end !important;
+  margin: 5px
 }
 
 .button-link, button.button {
@@ -129,6 +136,9 @@ li.item {
   width: 100%;
   max-width: 180px;
   font-family: Arial, Helvetica, sans-serif !important;
+  font-size: inherit; /* Inherit font size from parent element */
+  width: 75px;
+  margin: 5px;
 }
 
 .button-link:hover, button.button:hover {
@@ -150,8 +160,10 @@ li.item {
 }
 
 form {
-  max-width: 400px;
+  max-width: 300px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 
 label {
@@ -179,3 +191,26 @@ h1 {
   height: 5px;
   width:100%;
 }
+
+.formU {
+  align-items: flex-start;
+}
+
+/* .form-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.form-label strong {
+  margin-right: 10px;
+}
+
+.form-input {
+  padding: 8px;
+} */

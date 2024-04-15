@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 const SignUp = ({onLoginChange, operatingData, setOperatingData }) => {
     const [formData, setFormData] = useState({
         username: '',
-        userPassword: '',
+        password: '',
     });
 
     const handleChange = (e) => {
@@ -22,14 +22,18 @@ const SignUp = ({onLoginChange, operatingData, setOperatingData }) => {
         try {
             const response = await axios.post('https://localhost:7290/api/User/SignUp', formData);
 
-            setOperatingData({
-                idUser: response.data.idUser,
-                rights: response.data.rights,
-            });
-
+            if (response.data.token) {
+                const userData = {
+                    idUser: response.data.idUser,
+                    rights: response.data.rights,
+                    token: response.data.token
+                };
+                
+                setOperatingData(userData);
+                onLoginChange(userData.idUser, userData.rights, userData.token);
+            }
             toast.success('Successfuly, created');
 
-            onLoginChange(operatingData.idUser, operatingData.rights);
         } catch (error) {
             if (error.response && error.response.status === 422) {
                 console.error('Validation Error:', error.response.data);
@@ -38,7 +42,6 @@ const SignUp = ({onLoginChange, operatingData, setOperatingData }) => {
                 toast.error('Error Messages:', errorMessages);
             } else {
                 console.error('Error:', error.message);
-                toString.error('error', error);
             }
         }
         setFormData({
@@ -50,7 +53,7 @@ const SignUp = ({onLoginChange, operatingData, setOperatingData }) => {
     return (
         <div className='main-c'>
             <Navbar operatingData={operatingData} />
-            <div className='main-b'>
+            <div className='main-c main-b'>
                 <h1>Sign Up</h1>
                 <form onSubmit={handleSubmit}>
                     <label>

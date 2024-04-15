@@ -27,13 +27,16 @@ const SignIn = ({onLoginChange, operatingData, setOperatingData }) => {
                 },
             });
 
-            const userData = {
-                idUser: response.data.idUser,
-                rights: response.data.rights,
-            };
-            
-            setOperatingData(userData);
-            console.log(operatingData);
+            if (response.data.token) {
+                const userData = {
+                    idUser: response.data.idUser,
+                    rights: response.data.rights,
+                    token: response.data.token
+                };
+                
+                setOperatingData(userData);
+                onLoginChange(userData.idUser, userData.rights, userData.token);
+            }
         } catch (error) {
             console.error('Error during sign in:', error);
             toast.error('Error during sign-in. Please check your credentials and try again.');
@@ -41,17 +44,10 @@ const SignIn = ({onLoginChange, operatingData, setOperatingData }) => {
 
     };
 
-    useEffect(() => {
-        console.log(operatingData.rights, ' idu ', operatingData.idUser);
-        if (operatingData.idUser !== 0 && operatingData.idUser !== undefined && operatingData.rights !== undefined) {
-            onLoginChange(operatingData.idUser, operatingData.rights);
-        }
-    }, [operatingData.idUser, operatingData.rights]);
-
     return (
         <div className='main-c'>
             <Navbar operatingData={operatingData} />
-            <div className='main-b'>
+            <div className='main-c main-b'>
                 <h1>Sign In</h1>
                 <form onSubmit={handleSubmit}>
                     <label>

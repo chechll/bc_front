@@ -7,7 +7,7 @@ import Navbar from '../components/Navbar';
 function Index({ onLoginChange, operatingData }) {
     useEffect(() => {
         if (operatingData.idUser !== 0 || operatingData.idUser !== undefined) {
-            onLoginChange(operatingData.idUser, operatingData.rights);
+            onLoginChange(operatingData.idUser, operatingData.rights, operatingData.token);
         }
     }, []);
 

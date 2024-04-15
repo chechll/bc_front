@@ -17,8 +17,9 @@ function User({ onLoginChange, operatingData }) {
   const [prevEditing, setPrevEditing] = useState(false);
 
   useEffect(() => {
+    console.log(operatingData);
     if (operatingData.idUser === 0 || operatingData.idUser === undefined) {
-      onLoginChange(operatingData.idUser, operatingData.rights);
+      onLoginChange(operatingData.idUser, operatingData.rights, operatingData.token);
     }
 
     if (prevEditing === isEditing) {
@@ -29,6 +30,7 @@ function User({ onLoginChange, operatingData }) {
             params: {
               id: operatingData.idUser,
             },
+            headers: { Authorization: `Bearer ${operatingData.token}` }
           });
 
           const user = response.data;

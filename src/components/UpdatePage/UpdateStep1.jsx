@@ -22,9 +22,9 @@ const UpdateStep1 = ({ operatingData, onLoginChange, stepForward, updateData, se
 
         if (isConfirmed) {
             e.preventDefault();
-            console.log(updateData);
+            //console.log(updateData);
             try {
-                const response = await axios.put('https://localhost:7290/api/Game/UpdateGameByGameData', updateData);
+                const response = await axios.put('https://localhost:7290/api/Game/UpdateGameByGameData', updateData,{headers: { Authorization: `Bearer ${operatingData.token}` }});
                 stepForward();
             } catch (error) {
                 console.error('Error creating teams:', error);
@@ -36,7 +36,7 @@ const UpdateStep1 = ({ operatingData, onLoginChange, stepForward, updateData, se
 
     useEffect(() => {
         if (operatingData.idUser === 0 || operatingData.idUser === undefined) {
-            onLoginChange(operatingData.idUser,operatingData.rights);
+            onLoginChange(operatingData.idUser,operatingData.rights, operatingData.token);
         }
 
         const fetchGameData = async () => {
@@ -46,10 +46,10 @@ const UpdateStep1 = ({ operatingData, onLoginChange, stepForward, updateData, se
                     params: {
                         id: updateData.idGame,
                     },
+                    headers: { Authorization: `Bearer ${operatingData.token}` }
                 });
 
                 const game = response.data;
-
                 setUpdateData({
                     name: game.name,
                     size: game.size,
@@ -69,6 +69,7 @@ const UpdateStep1 = ({ operatingData, onLoginChange, stepForward, updateData, se
 
     return (
         <div className='main-c  main-b'>
+            <h1>Updating game</h1>
             <h2>Step 1</h2>
             <form onSubmit={handleSubmit}>
                 <label>
@@ -118,14 +119,6 @@ const UpdateStep1 = ({ operatingData, onLoginChange, stepForward, updateData, se
                         onChange={handleChange}
                         required
                     />
-                </label>
-
-                <label>
-                    <strong>Enable question:</strong>
-                    <select value={updateData.enQuestions} onChange={handleChange} name="enQuestions">
-                        <option value={true}>true</option>
-                        <option value={false}>false</option>
-                    </select>
                 </label>
 
                 <div className="user-actions">

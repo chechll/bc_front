@@ -30,7 +30,7 @@ const CreateGame = ({operatingData, onLoginChange}) => {
 
   useEffect(() => {
     if (operatingData.idUser === 0 || operatingData.idUser === undefined) {
-        onLoginChange(operatingData.idUser, operatingData.rights);
+        onLoginChange(operatingData.idUser, operatingData.rights, operatingData.token);
     }
   }, [operatingData.idUser, onLoginChange]);
 
@@ -50,7 +50,6 @@ const CreateGame = ({operatingData, onLoginChange}) => {
   return (
       <div className='main-c'>
         <Navbar operatingData={operatingData} />
-        <h1>Creating game</h1>
         {renderStep()}
       </div>  
   );

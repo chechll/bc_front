@@ -17,24 +17,24 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [operatingData, setOperatingData] = useState(() => {
-    const storedData = getWithExpiry('userOperatingData');
-    return storedData || { idUser: 0, rights: 0 };
+    const storedData = getWithExpiry('userTokenAndData');
+    return storedData || { idUser: 0, rights: 0, token: null };
   });
 
   useEffect(() => {
-    setWithExpiry('userOperatingData', operatingData, 6 * 60 * 60 * 1000);
+    setWithExpiry('userTokenAndData', operatingData, 6 * 60 * 60 * 1000);
   }, [operatingData]);
 
   const history = useNavigate();
 
-  const handleLoginChange = (idUser, rights) => {
+  const handleLoginChange = (idUser, rights, token) => {
     if (idUser === 0 || idUser === undefined) {
-      setOperatingData({ idUser: 0, rights: 0 });
-      localStorage.removeItem('userOperatingData');
+      setOperatingData({ idUser: 0, rights: 0, token: null });
+      localStorage.removeItem('userTokenAndData');
       history('/');
     } else {
-      console.log('idUser = ', idUser, 'rights =', rights);
-      setOperatingData({ idUser: idUser, rights: rights });
+      setOperatingData({ idUser: idUser, rights: rights, token: token });
+      setTokenWithExpiry('userTokenAndData', token, { idUser: idUser, rights: rights }, 6 * 60 * 60 * 1000);
       history('/home');
     }
   };
@@ -49,7 +49,7 @@ function App() {
         <Route path="/user" element={<User onLoginChange={handleLoginChange} operatingData={operatingData} />} />
         <Route path="/create_game" element={<CreateGame onLoginChange={handleLoginChange} operatingData={operatingData} />} />
         <Route path="/update_game/:idGame" element={<UpdateGame onLoginChange={handleLoginChange} operatingData={operatingData} />} />
-        <Route path="/game/:idGame" element={<Game onLoginChange={handleLoginChange} operatingData={operatingData} />} />
+        <Route path="/game/:idGame" element={<Game operatingData={operatingData} onLoginChange={handleLoginChange}/>} />
         <Route path="/stats/:idGame" element={<Stats onLoginChange={handleLoginChange} operatingData={operatingData} />} />
         <Route path="/rules" element={<Rules onLoginChange={handleLoginChange} operatingData={operatingData} />} />
         <Route path="*" element={<NoPage onLoginChange={handleLoginChange} operatingData={operatingData} />} />
@@ -82,4 +82,14 @@ function getWithExpiry(key) {
     return null;
   }
   return item.value;
+}
+
+function setTokenWithExpiry(key, token, value, ttl) {
+  const now = new Date();
+  const item = {
+    value: value,
+    token: token,
+    expiry: now.getTime() + ttl,
+  };
+  localStorage.setItem(key, JSON.stringify(item));
 }

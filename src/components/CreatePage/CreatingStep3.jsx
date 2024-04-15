@@ -24,13 +24,13 @@ const CreatingStep3 = ({ operatingData, onLoginChange, createData }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(tasksData);
+    //console.log(tasksData);
     try {
-      const response = await axios.post('https://localhost:7290/api/Task/CreateTasks', tasksData);
+      const response = await axios.post('https://localhost:7290/api/Task/CreateTasks', tasksData,{headers: { Authorization: `Bearer ${operatingData.token}` }});
 
       
         console.log('Tasks created successfully');
-        onLoginChange(operatingData.idUser, operatingData.rights);
+        onLoginChange(operatingData.idUser, operatingData.rights, operatingData.token);
     } catch (error) {
       console.error('Error creating tasks:', error);
       toast.error('Error during creating');
@@ -39,6 +39,7 @@ const CreatingStep3 = ({ operatingData, onLoginChange, createData }) => {
 
   return (
     <div className='main-c'>
+      <h1>Creating game</h1>
       <h2>Step 3: Create Tasks</h2>
       <form onSubmit={handleSubmit}>
         {tasksData.map((task, index) => (

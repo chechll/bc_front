@@ -10,8 +10,7 @@ function UserUpdate({ handleEdit, userData, setUserData}) {
     try {
 
       console.log('FormData:', userData);
-      const response = await axios.put('https://localhost:7290/api/User/Update', userData
-      );
+      const response = await axios.put('https://localhost:7290/api/User/Update', userData, {headers: { Authorization: `Bearer ${operatingData.token}` }});
 
       console.log('User updated successfully:', response.data);
       toast.success('Updated successfully');
