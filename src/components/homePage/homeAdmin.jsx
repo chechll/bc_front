@@ -49,7 +49,6 @@ const HomeAdmin = ( { onLoginChange, operatingData} ) => {
             },
             headers: { Authorization: `Bearer ${operatingData.token}` }
           });
-          //console.log('Deleted successfully');
           setUsers((prevUsers) => prevUsers.filter((user) => user.idUser !== idUser));
         } catch (error) {
           console.error('Error during delete:', error);
@@ -63,7 +62,6 @@ const HomeAdmin = ( { onLoginChange, operatingData} ) => {
     
     try {
       console.log('Updating');
-      //console.log(choosedUser);
       const response = await axios.put('https://localhost:7290/api/User/UpdateAdmin', choosedUser, {headers: { Authorization: `Bearer ${operatingData.token}` }});
     
       console.log('User updated successfully:', response.data);

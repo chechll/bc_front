@@ -17,7 +17,6 @@ function User({ onLoginChange, operatingData }) {
   const [prevEditing, setPrevEditing] = useState(false);
 
   useEffect(() => {
-    console.log(operatingData);
     if (operatingData.idUser === 0 || operatingData.idUser === undefined) {
       onLoginChange(operatingData.idUser, operatingData.rights, operatingData.token);
     }

@@ -8,7 +8,6 @@ const TeamLogIn = ({teamData, teamD, setTeamD ,setActualTeam, actualTeam, setIsL
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        console.log(teamD);
         if (name === 'id') {
           setTeamD((prevData) => ({ ...prevData, [name]: parseInt(value) }));
         } else { setTeamD((prevData) => ({ ...prevData, [name]: value })); }
@@ -23,13 +22,11 @@ const TeamLogIn = ({teamData, teamD, setTeamD ,setActualTeam, actualTeam, setIsL
               id: teamD.idTeam,
             },
           });
-          console.log('id ',response.data.id);
-          console.log(response.data);
           setResp(response.data.id);
           setToken(response.data.token);
           try {
             const respon = await axios.put(`https://localhost:7290/api/Game/AddTeam?idTeam=${teamD.idTeam}`);
-            setActualTeam(teamD.idTeam);
+            setActualTeam(parseInt(teamD.idTeam));
             if (respon.data == "Team started") {
 
             setIsLoged(true);
@@ -58,7 +55,6 @@ const TeamLogIn = ({teamData, teamD, setTeamD ,setActualTeam, actualTeam, setIsL
                   idTeam: actualTeam,
                 },
               });
-              console.log("resp ",response.data, " id ",teamD.idTeam)
               if (response.data == "Ok") {
               setIsWaiting(false);
               clearInterval(intervalId);
@@ -73,7 +69,7 @@ const TeamLogIn = ({teamData, teamD, setTeamD ,setActualTeam, actualTeam, setIsL
 
   return (
     <div className='main-c main-b'>
-      {!isWaiting ? (<form onSubmit={handleSubmit}>
+      {!isWaiting ? (<form onSubmit={handleSubmit} className='form-label'>
           <select value={teamD.idTeam} onChange={handleChange} name="idTeam">
             {teamData.map((item, index) => (
               <option key={index} value={item.idTeam}>

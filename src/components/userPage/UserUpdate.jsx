@@ -8,8 +8,6 @@ function UserUpdate({ handleEdit, userData, setUserData}) {
     e.preventDefault();
 
     try {
-
-      console.log('FormData:', userData);
       const response = await axios.put('https://localhost:7290/api/User/Update', userData, {headers: { Authorization: `Bearer ${operatingData.token}` }});
 
       console.log('User updated successfully:', response.data);

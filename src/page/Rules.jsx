@@ -10,7 +10,7 @@ function Rules({ operatingData }) {
             <Navbar operatingData={operatingData} />
 
             <div className="main-c">
-                <section className="rules">
+                <section className="wel-sections">
                     <h2>Embark on an exciting adventure with Quest, the ultimate computer-based game.</h2>
                     <h3>Here's how to get started:</h3>
                     <ol>

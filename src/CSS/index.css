@@ -40,7 +40,7 @@ body {
   min-width: 80%;
   padding-left: 5%;
   padding-right: 5%;
-  margin: 0 auto;
+  margin: 0;
   padding-top: 30px;
   padding-bottom: 0;
   text-align: center;
@@ -80,7 +80,7 @@ ul {
 .user-actions > ul {
   display: flex;
   list-style: none;
-  padding: 20px;
+  justify-content: center;
 }
 
 ul.item-list {
@@ -92,8 +92,8 @@ ul.item-list {
 
 li.item {
   display: flex;
-  flex-direction: column; /* Display content vertically */
-  align-items: flex-start; /* Align items to the start of the flex container */
+  flex-direction: column;
+  align-items: flex-start;
   margin: 10px;
   padding: 10px;
   border: 1px solid violet;
@@ -105,7 +105,7 @@ li.item {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 100%;
+  
   margin-top: 10px;
 }
 
@@ -118,7 +118,7 @@ li.item {
 }
 
 .item button {
-  width: 80px !important;
+  width: 90px !important;
   align-items: flex-end !important;
   margin: 5px
 }
@@ -137,7 +137,7 @@ li.item {
   max-width: 180px;
   font-family: Arial, Helvetica, sans-serif !important;
   font-size: inherit; /* Inherit font size from parent element */
-  width: 75px;
+  width: 90px;
   margin: 5px;
 }
 
@@ -200,13 +200,13 @@ h1 {
   display: flex;
   flex-direction: column;
 }
-
+*/
 .form-label {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
 }
-
+/*
 .form-label strong {
   margin-right: 10px;
 }

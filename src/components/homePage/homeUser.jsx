@@ -4,7 +4,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useNavigate, Link } from 'react-router-dom';
 
-function HomeUser ({onLoginChange, operatingData}) {
+function HomeUser({ onLoginChange, operatingData }) {
     const [games, setGames] = useState([]);
     const [preparedGames, setPreparedGames] = useState([]);
     const [completedGames, setCompletedGames] = useState([]);
@@ -14,8 +14,8 @@ function HomeUser ({onLoginChange, operatingData}) {
 
     const fetchGames = async () => {
         try {
-            const response = await axios.get('https://localhost:7290/api/Game/GetAllGames', { 
-                params: { iduser: operatingData.idUser } ,
+            const response = await axios.get('https://localhost:7290/api/Game/GetAllGames', {
+                params: { iduser: operatingData.idUser },
                 headers: { Authorization: `Bearer ${operatingData.token}` }
             });
             if (response.data && response.data.length > 0) {
@@ -23,7 +23,7 @@ function HomeUser ({onLoginChange, operatingData}) {
                 const preparedGames = [];
                 const runningGames = [];
                 const completedGames = [];
-    
+
                 await Promise.all(response.data.map(async (game) => {
                     if (!game.dateGame) {
                         preparedGames.push(game);
@@ -36,8 +36,12 @@ function HomeUser ({onLoginChange, operatingData}) {
                             completedGames.push(game);
                         }
                     }
+
+                    if (!game.dateGame && (await checkGameData(game.idGame))) {
+                        game.hasError = true;
+                    }
                 }));
-    
+
                 setPreparedGames(preparedGames);
                 setRunningGames(runningGames);
                 setCompletedGames(completedGames);
@@ -51,7 +55,7 @@ function HomeUser ({onLoginChange, operatingData}) {
             console.error('Error fetching games:', error);
         }
     };
-    
+
 
     useEffect(() => {
         if (operatingData.idUser === 0 || operatingData.idUser === undefined) {
@@ -62,7 +66,7 @@ function HomeUser ({onLoginChange, operatingData}) {
     }, []);
 
     const handleCreate = () => {
-        navigate('/create_game'); 
+        navigate('/create_game');
     };
 
     const checkIfRunning = async (idG) => {
@@ -73,7 +77,7 @@ function HomeUser ({onLoginChange, operatingData}) {
                 },
                 headers: { Authorization: `Bearer ${operatingData.token}` }
             });
-            if (response.data == "Yes" ) {
+            if (response.data == "Yes") {
                 return true;
             } else {
                 return false;
@@ -87,22 +91,21 @@ function HomeUser ({onLoginChange, operatingData}) {
 
     const handleStartGame = async (idGame) => {
         try {
-          await axios.put(`https://localhost:7290/api/Game/Start?idGame=${idGame}`, null, {headers: { Authorization: `Bearer ${operatingData.token}` }});
-          console.log('Added successfully');
-          toast.success('Cloned successfully');
-          navigate(`/game/${idGame}`);
+            await axios.put(`https://localhost:7290/api/Game/Start?idGame=${idGame}`, null, { headers: { Authorization: `Bearer ${operatingData.token}` } });
+            console.log('Added successfully');
+            toast.success('Cloned successfully');
+            navigate(`/game/${idGame}`);
         } catch (error) {
-          console.error('Error during start:', error.response.data);
-          toast.error('Error during clone');
+            console.error('Error during start:', error.response.data);
+            toast.error('Error during clone');
         }
-      };
+    };
 
     const handleClone = async (idGame) => {
         const isConfirmed = window.confirm('Are you sure?');
         if (isConfirmed) {
             try {
-                //console.log(idGame);
-                await axios.get('https://localhost:7290/api/Game/CloneGame', { params : {idGame:idGame}, headers: { Authorization: `Bearer ${operatingData.token}` }});
+                await axios.get('https://localhost:7290/api/Game/CloneGame', { params: { idGame: idGame }, headers: { Authorization: `Bearer ${operatingData.token}` } });
                 console.log('Cloned successfully');
                 toast.success('Cloned successfully');
                 fetchGames();
@@ -117,7 +120,6 @@ function HomeUser ({onLoginChange, operatingData}) {
         const isConfirmed = window.confirm('Are you sure?');
         if (isConfirmed) {
             try {
-                //console.log(idGame);
                 await axios.delete('https://localhost:7290/api/Game/DeleteGame', {
                     headers: { Authorization: `Bearer ${operatingData.token}` },
                     params: { idGame: idGame, },
@@ -137,74 +139,94 @@ function HomeUser ({onLoginChange, operatingData}) {
         }
     };
 
+    const checkGameData = async (idGame) => {
+        try {
+            const response = await axios.get('https://localhost:7290/api/Game/CheckGameData', {
+                params: { id: idGame },
+                headers: { Authorization: `Bearer ${operatingData.token}` }
+            });
+            return false;
+        } catch (error) {
+            console.error('Error checking game data:', error);
+            return true;
+        }
+    };
+
     return (
         <div className='main-w'>
-            <button className="button" onClick={handleCreate}>
-                        Create new button
-            </button>
             {isThereAnyGame ? (
                 <div>
-                    <hr className='hr-style'/>
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                        <button className="button" onClick={handleCreate}>
+                            Create new
+                        </button>
+                    </div>
+                    <hr className='hr-style' />
                     <h1>Running Games:</h1>
                     <ul className="item-list">
                         {runningGames.map((game) => (
                             <li key={game.idGame} className="item">
                                 <strong>Name</strong> {game.name} , <strong>Date:</strong> {new Date(game.dateGame).toLocaleString()}
                                 <div className='buttons'>
-                                <Link className='button-link' to={`/stats/${game.idGame}`}>Stats</Link>
-                                <button className="button" onClick={() => handleClone(game.idGame)}>
-                                    Clone
-                                </button>
+                                    <Link className='button-link' to={`/stats/${game.idGame}`}>Stats</Link>
+                                    <button className="button" onClick={() => handleClone(game.idGame)}>
+                                        Clone
+                                    </button>
                                 </div>
                             </li>
                         ))}
                     </ul>
 
                     <div className='item list'>
-                    <hr className='hr-style'/>
-                    <h1>Prepared Games:</h1>
-                    <ul className="item-list">
-                        {preparedGames.map((game) => (
-                            <li key={preparedGames.idGame} className="item">
-                                <strong>Name</strong> {game.name}
-                                <div className='buttons'>
-                                <button className='button' onClick={() => handleStartGame(game.idGame)}>Start</button>
-                                <Link className='button-link' to={`/update_game/${game.idGame}`}>Update</Link>
-                                <button className="button" onClick={() => handleDelete(game.idGame)}>
-                                    Delete
-                                </button>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
-                    
-                    <hr className='hr-style'/>
-                    <h1>Completed Games:</h1>
-                    <ul className="item-list">
-                        {completedGames.map((game) => (
-                            <li key={game.idGame} className="item">
-                                <strong>Name</strong> {game.name} , <strong>Date:</strong> {new Date(game.dateGame).toLocaleString()}
-                                <div className='buttons'>
-                                <Link className='button-link' to={`/stats/${game.idGame}`}>Stats</Link>
-                                <button className="button" onClick={() => handleClone(game.idGame)}>
-                                    Clone
-                                </button>
-                                <button className="button" onClick={() => handleDelete(game.idGame)}>
-                                    Delete
-                                </button>
-                                </div>
-                            </li>
-                        ))}
-                    </ul>
+                        <hr className='hr-style' />
+                        <h1>Prepared Games:</h1>
+                        <ul className="item-list">
+                            {preparedGames.map((game) => (
+                                <li key={game.idGame} className="item">
+                                    <strong>Name</strong> {game.name}
+                                    <div className='buttons'>
+                                        {!game.hasError && (
+                                            <button className='button' onClick={() => handleStartGame(game.idGame)}>Start</button>
+                                        )}
+                                        <Link className='button-link' to={`/update_game/${game.idGame}`}>Update</Link>
+                                        <button className="button" onClick={() => handleDelete(game.idGame)}>
+                                            Delete
+                                        </button>
+                                    </div>
+                                    {game.hasError && <span style={{ color: 'red' }}>Error: Game not fully created</span>}
+                                </li>
+                            ))}
+                        </ul>
+
+                        <hr className='hr-style' />
+                        <h1>Completed Games:</h1>
+                        <ul className="item-list">
+                            {completedGames.map((game) => (
+                                <li key={game.idGame} className="item">
+                                    <strong>Name</strong> {game.name} , <strong>Date:</strong> {new Date(game.dateGame).toLocaleString()}
+                                    <div className='buttons'>
+                                        <Link className='button-link' to={`/stats/${game.idGame}`}>Stats</Link>
+                                        <button className="button" onClick={() => handleClone(game.idGame)}>
+                                            Clone
+                                        </button>
+                                        <button className="button" onClick={() => handleDelete(game.idGame)}>
+                                            Delete
+                                        </button>
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
                 </div>
             ) : (
-                <div>
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100vh" }}>
                     <p>You don't have any game yet. Let's make some</p>
-                    <button className="button" onClick={handleCreate}>
-                        Create
-                    </button>
-                </div> 
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                        <button className="button" onClick={handleCreate}>
+                            Create new
+                        </button>
+                    </div>
+                </div>
             )}
         </div>
     );

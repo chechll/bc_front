@@ -24,13 +24,11 @@ const CreatingStep3 = ({ operatingData, onLoginChange, createData }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //console.log(tasksData);
     try {
       const response = await axios.post('https://localhost:7290/api/Task/CreateTasks', tasksData,{headers: { Authorization: `Bearer ${operatingData.token}` }});
-
-      
-        console.log('Tasks created successfully');
-        onLoginChange(operatingData.idUser, operatingData.rights, operatingData.token);
+      console.log('Tasks created successfully');
+      toast.success('Created successfully');
+      onLoginChange(operatingData.idUser, operatingData.rights, operatingData.token);
     } catch (error) {
       console.error('Error creating tasks:', error);
       toast.error('Error during creating');

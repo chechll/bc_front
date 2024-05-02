@@ -49,7 +49,7 @@ const SignIn = ({onLoginChange, operatingData, setOperatingData }) => {
             <Navbar operatingData={operatingData} />
             <div className='main-c main-b'>
                 <h1>Sign In</h1>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className='form-label'>
                     <label>
                         <input
                             placeholder='username'

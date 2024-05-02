@@ -35,21 +35,10 @@ const CreatingStep1 = ({ operatingData, stepForward, createData, setCreateData, 
     }
   };
 
-//   <label>
-//   <strong>Enable question:</strong>
-//   <select value={createData.enQuestions} onChange={handleChange} name="enQuestions">
-//     <option value={true}>true</option>
-//     <option value={false}>false</option>
-//   </select>
-// </label>
-
   useEffect(() => {
     const fetchData = async () => {
       try {
-        //console.log(formData);
         const response = await axios.post('https://localhost:7290/api/Game/CreateGame', formData, {headers: { Authorization: `Bearer ${operatingData.token}` }});
-        //console.log(response.data);
-        //console.log(createData.idGame);
 
         updateIdGame(response.data);
 
@@ -79,8 +68,8 @@ const CreatingStep1 = ({ operatingData, stepForward, createData, setCreateData, 
       <h2>Step 1</h2>
       <form onSubmit={handleSubmit}>
       <div className="form-container">
+      <strong>Name:</strong>
   <label className="form-label">
-    <strong>Name:</strong>
     <input
       className="form-input"
       placeholder='name'
@@ -91,8 +80,8 @@ const CreatingStep1 = ({ operatingData, stepForward, createData, setCreateData, 
       required
     />
   </label>
+  <strong>Size:</strong>
   <label className="form-label">
-    <strong>Size:</strong>
     <select
       className="form-input"
       value={createData.size}
@@ -110,8 +99,8 @@ const CreatingStep1 = ({ operatingData, stepForward, createData, setCreateData, 
       <option value={25}>25</option>
     </select>
   </label>
+  <strong>Number of teams:</strong>
   <label className="form-label">
-    <strong>Number of teams:</strong>
     <select
       className="form-input"
       value={createData.numberOfTeams}
@@ -125,8 +114,8 @@ const CreatingStep1 = ({ operatingData, stepForward, createData, setCreateData, 
       <option value={6}>6</option>
     </select>
   </label>
+  <strong>Number of tasks:</strong>
   <label className="form-label">
-    <strong>Number of tasks:</strong>
     <input
       className="form-input"
       placeholder='numberOfTasks'

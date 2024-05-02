@@ -37,12 +37,10 @@ const SignUp = ({onLoginChange, operatingData, setOperatingData }) => {
         } catch (error) {
             if (error.response && error.response.status === 422) {
                 console.error('Validation Error:', error.response.data);
-                const errorMessages = error.response.data[''].errors;
-                console.log('Error Messages:', errorMessages);
-                toast.error('Error Messages:', errorMessages);
+                toast.error('Validation Error:', error.response.data);
             } else {
                 console.error('Error:', error.message);
-            }
+            }    
         }
         setFormData({
             username: '',
@@ -55,7 +53,7 @@ const SignUp = ({onLoginChange, operatingData, setOperatingData }) => {
             <Navbar operatingData={operatingData} />
             <div className='main-c main-b'>
                 <h1>Sign Up</h1>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} className='form-label'>
                     <label>
                         <input
                             placeholder='username'

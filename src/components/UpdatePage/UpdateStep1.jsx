@@ -22,7 +22,6 @@ const UpdateStep1 = ({ operatingData, onLoginChange, stepForward, updateData, se
 
         if (isConfirmed) {
             e.preventDefault();
-            //console.log(updateData);
             try {
                 const response = await axios.put('https://localhost:7290/api/Game/UpdateGameByGameData', updateData,{headers: { Authorization: `Bearer ${operatingData.token}` }});
                 stepForward();
@@ -41,7 +40,6 @@ const UpdateStep1 = ({ operatingData, onLoginChange, stepForward, updateData, se
 
         const fetchGameData = async () => {
             try {
-                console.log(updateData.idGame);
                 const response = await axios.get('https://localhost:7290/api/Game/GetGameData', {
                     params: {
                         id: updateData.idGame,
@@ -72,8 +70,8 @@ const UpdateStep1 = ({ operatingData, onLoginChange, stepForward, updateData, se
             <h1>Updating game</h1>
             <h2>Step 1</h2>
             <form onSubmit={handleSubmit}>
+            <strong>Name:</strong>
                 <label>
-                    <strong>Name:</strong>
                     <input
                         placeholder='name'
                         type="text"
@@ -83,8 +81,8 @@ const UpdateStep1 = ({ operatingData, onLoginChange, stepForward, updateData, se
                         required
                     />
                 </label>
-                <label>
                     <strong>Size: </strong>
+                <label>
                     <select value={updateData.size} onChange={handleChange} name="size">
                         <option value={9}>9</option>
                         <option value={11}>11</option>
@@ -98,8 +96,8 @@ const UpdateStep1 = ({ operatingData, onLoginChange, stepForward, updateData, se
                     </select>
                 </label>
 
+                <strong>Number of teams: </strong>
                 <label>
-                    <strong>Number of teams: </strong>
                     <select value={updateData.numberOfTeams} onChange={handleChange} name="numberOfTeams">
                         <option value={2}>2</option>
                         <option value={3}>3</option>
@@ -108,9 +106,9 @@ const UpdateStep1 = ({ operatingData, onLoginChange, stepForward, updateData, se
                         <option value={6}>6</option>
                     </select>
                 </label>
+                    <strong>Number of tasks: </strong>
 
                 <label>
-                    <strong>Number of tasks: </strong>
                     <input
                         placeholder='numberOfTasks'
                         type="number"

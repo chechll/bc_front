@@ -25,7 +25,6 @@ const TaskInputs = ({ tasksData, userAns, correctAnswers, setUserAns, setCorrect
                 },
                 headers: { Authorization: `Bearer ${token}` }
               });
-              //console.log(response);
               const newCorrectAnswer = { id: 0, idTask: tasksData[index].idTask, idTeam: actualTeam };
               setCorrectAnswers(prevCorrectAnswers => [...prevCorrectAnswers, newCorrectAnswer]);
             } catch (error) {

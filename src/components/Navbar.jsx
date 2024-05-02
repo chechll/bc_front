@@ -5,7 +5,6 @@ import '../CSS/navbar.css';
 const Navbar = ({operatingData}) => {
 
   const [isLoggedIn] = useState(() => {
-    console.log(operatingData.idUser);
     return operatingData.idUser !== 0 && operatingData.idUser !== undefined;
   });
 

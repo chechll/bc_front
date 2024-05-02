@@ -4,8 +4,6 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import '../CSS/index.css';
 import '../CSS/game.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPerson } from '@fortawesome/free-solid-svg-icons';
 import Navbar from '../components/Navbar';
 import Board from '../components/GamePage/Board';
 
@@ -25,7 +23,6 @@ function Stats({ onLoginChange, operatingData }) {
     const [runningGame, setRunningGames] = useState(false);
 
     useEffect(() => {
-        console.log(operatingData);
         if (operatingData.idUser === 0 || operatingData.idUser === undefined) {
             onLoginChange(operatingData.idUser, operatingData.rights, operatingData.token);
         }
@@ -129,7 +126,6 @@ function Stats({ onLoginChange, operatingData }) {
                     headers: { Authorization: `Bearer ${operatingData.token}` }
                 });
                 setCorrectAnswers(response.data);
-                //console.log('corA ', response.data);
             } catch (error) {
                 console.error('Error fetching correct answers:', error);
                 toast.error('Error fetching correct answers');
@@ -158,7 +154,7 @@ function Stats({ onLoginChange, operatingData }) {
 
             
             <div className="game-container ">
-                <Board boardArray={boardArray} teamData={teamData}/>
+                <Board boardArray={boardArray} teamData={teamData} actualTeamId={teamD.idTeam}/>
                 <div className="left-container">
                     <div className="game-info">
                         {teamData.map((team, index) => (
@@ -181,7 +177,7 @@ function Stats({ onLoginChange, operatingData }) {
                 {tasksData.map((task, index) => (
                     <div key={task.Number} className="task-input">
                         <p>
-                            {index + 1}: {task.answer} {(correctAnswers.some(answer => answer.idTask === task.idTask)) ? <span style={{ color: 'green' }}>OK</span> : <span style={{ color: 'red' }}>No</span>}
+                        <span style={{ color: 'violet' }}>{index + 1}:</span> {task.answer} {(correctAnswers.some(answer => answer.idTask === task.idTask)) ? <span style={{ color: 'green' }}>OK</span> : <span style={{ color: 'red' }}>No</span>}
                         </p>
                     </div>
                 ))}

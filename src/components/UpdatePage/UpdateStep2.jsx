@@ -55,6 +55,7 @@ const UpdateStep2 = ({ operatingData, stepForward, updateData, stepBack }) => {
       <form onSubmit={handleSubmit}>
         {teamsData.map((team, index) => (
           <div key={index}>
+          <hr className='hr-style'/>
             <label>
               Team{index + 1} Name:  &nbsp;
               <input
@@ -88,6 +89,7 @@ const UpdateStep2 = ({ operatingData, stepForward, updateData, stepBack }) => {
                 required
               />
             </label>
+            
           </div>
         ))}
         <div className="user-actions">

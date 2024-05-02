@@ -39,7 +39,6 @@ const Game = (operatingData, onLoginChange) => {
   const [log, setLog] = useState(false);
 
   useEffect(() => {
-    console.log("op ", operatingData.operatingData);
     if (log) {
       operatingData.onLoginChange(operatingData.operatingData.idUser, operatingData.operatingData.rights, operatingData.operatingData.token);
     }
@@ -54,9 +53,8 @@ const Game = (operatingData, onLoginChange) => {
           },
         });
         setTeamData(response.data);
+        setTeamD(prevData => ({ ...prevData, idTeam: response.data[0].idTeam }));
         console.log(response.data);
-        setTeamD(prevData => ({ ...prevData, idTeam: response.data[0].idTeam }))
-
       } catch (error) {
         console.error('Error fetching teams data:', error);
         setLog(true);
@@ -73,7 +71,7 @@ const Game = (operatingData, onLoginChange) => {
         const responseData = response.data;
   
         const deadlineDate = new Date(responseData);
-        deadlineDate.setHours(deadlineDate.getHours() + 1);
+        deadlineDate.setHours(deadlineDate.getHours() + 2);
         const currentTime = new Date();
         const remainingTime = deadlineDate.getTime() - currentTime.getTime();
         setRemainingTime(remainingTime);
@@ -86,9 +84,6 @@ const Game = (operatingData, onLoginChange) => {
 
     fetchTeamsData();
     fetchDeadline();
-    console.log('token ',token);
-    if (token !== 0) {
-    }
   }, [idGame, token]);
 
   useEffect(() => {
@@ -108,8 +103,6 @@ const Game = (operatingData, onLoginChange) => {
 
   const updateBoardString = () => {
     const boardString = boardArray.map(row => row.join('')).join('');
-
-    //console.log('boardString:', boardString, typeof boardString);
 
     setBoard(prevBoard => {
       return { ...prevBoard, board1: boardString };
@@ -178,16 +171,14 @@ const Game = (operatingData, onLoginChange) => {
       }
     };
 
-    console.log('tk ',token, ' act ', actualTeam);
     if (actualTeam !== 0 && isLogged && token != null) {
-      console.log('imhere');
       fetchCorrectAnswers();
       fetchTasksData();
       fetchBoard();
       setLogoutTime(120);
       setTimeForClock(120);
+      console.log(actualTeam);
     }
-
   }, [isLogged]);
 
   useEffect(() => {
@@ -198,7 +189,6 @@ const Game = (operatingData, onLoginChange) => {
     };
   
     if (isLogged && logoutTime != 0) {
-      console.log(logoutTime);
       logoutTimer = setTimeout(handleLogout, logoutTime * 1000);
     }
   
@@ -209,7 +199,6 @@ const Game = (operatingData, onLoginChange) => {
   const logOut = async (e) => {
     e.preventDefault();
     updateBoardString();
-    console.log('board');
     if (actualTeam != 0) {
     try {
       const teamToUpdate = teamData.find(team => team.idTeam === actualTeam);
@@ -228,7 +217,6 @@ const Game = (operatingData, onLoginChange) => {
       },{headers: { Authorization: `Bearer ${token}` }});
     } catch (error) {
       console.error('Error updating board/teams/creating answered tasks:', error);
-      toast.error('Error during logout');
     };}
     setActualTeam(0);
     setUserAns([]);
@@ -244,7 +232,7 @@ const Game = (operatingData, onLoginChange) => {
         <RemTime eningTime={eningTime} setEningTime={setEningTime} timeForClock={timeforClock} setTimeForClock={setTimeForClock}/>
         
         <div className="game-container">
-          <GameBoard boardArray={boardArray} teamData={teamData} />
+          <GameBoard boardArray={boardArray} teamData={teamData} actualTeamId={actualTeam}/>
           <div className="left-container">
             <div className="game-info">
             {teamData && actualTeam && teamData[teamData.findIndex(team => team.idTeam === actualTeam)] && 
@@ -258,10 +246,11 @@ const Game = (operatingData, onLoginChange) => {
               setBoardArray={setBoardArray} updateBoardString={updateBoardString} correctAnswers={correctAnswers}/>
             <button className="button" onClick={logOut}>log out</button>
 
-            <TaskInputs tasksData={tasksData} userAns={userAns} correctAnswers={correctAnswers} 
-            setUserAns={setUserAns} setCorrectAnswers={setCorrectAnswers} actualTeam={actualTeam} token={token}/>  
+             
 
           </div>
+          <TaskInputs tasksData={tasksData} userAns={userAns} correctAnswers={correctAnswers} 
+            setUserAns={setUserAns} setCorrectAnswers={setCorrectAnswers} actualTeam={actualTeam} token={token}/>
         </div>
         
       </div>) : (<TeamLogIn teamData={teamData} teamD={teamD} setTeamD={setTeamD} setActualTeam={setActualTeam} actualTeam={actualTeam} setIsLoged={setIsLoged}
